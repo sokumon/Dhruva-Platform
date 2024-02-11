@@ -111,7 +111,7 @@ class AudioService:
         return (audio_chunks, adjusted_timestamps)
 
     def download_audio(self, url: str):
-        if "youtube.com" in url or "youtu.be" in url or "drive.google.com" in url:
+        if "youtube.com" in url or "youtu.be" in url:
             temp = tempfile.TemporaryDirectory()
             subprocess.call(
                 [
@@ -123,6 +123,23 @@ class AudioService:
                     "0",
                     url,
                     "--output",
+                    temp.name + "/file.mp3",
+                ]
+            )
+
+            with open(temp.name + "/file.mp3", "rb") as fhand:
+                file_bytes = fhand.read()
+
+            temp.cleanup()
+
+        elif "drive.google.com" in url:
+            temp = tempfile.TemporaryDirectory()
+            subprocess.call(
+                [
+                    "gdown",
+                    "--fuzzy",
+                    url,
+                    "-O",
                     temp.name + "/file.mp3",
                 ]
             )
